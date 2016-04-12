@@ -16,6 +16,11 @@ public class SimplePlayer implements Player{
 		setPlayerId(playerId);
 		setPoints(points);
 	}
+	
+	public SimplePlayer getPlayer()
+	{
+		return this;
+	}
  
 	@Override
 	public String getPlayerName() {
@@ -36,6 +41,7 @@ public class SimplePlayer implements Player{
 
 	@Override
 	public void setPoints(int points) {
+ 
 	   this.points = points;
 		
 	}
@@ -52,11 +58,11 @@ public class SimplePlayer implements Player{
 
 	@Override
 	public boolean placeBet(int number, int bet) {
-	
-		if(points>=bet)
+ 
+		if(points>=bet && number > 0)
 		{
-			this.luckyNumber = number;
 			this.bet = bet;
+			this.luckyNumber = number;
 			return true;
 		}
 		

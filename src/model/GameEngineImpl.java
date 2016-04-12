@@ -1,23 +1,48 @@
 package model;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.swing.Timer;
+
 import model.interfaces.GameEngine;
 import model.interfaces.GameEngineCallback;
 import model.interfaces.Player;
+import view.GameFrame;
 
 public class GameEngineImpl implements GameEngine{
 	
 	private ArrayList<Player> players = new ArrayList();
-
+	private GameEngineCallback gameEngineCallBack;
+	public GameFrame gameFrame;
+ 
 	@Override
 	public int spin(int wheelSize, int initialDelay, int finalDelay, int delayIncrement) {
 		
-		int number = (int) (Math.random() * wheelSize);
+		int num = 0;
+
+		for(int i=initialDelay;i<finalDelay;i+=delayIncrement)
+		{
+			try{
+				
+				 Thread.sleep(i*5);
+				 num = (int)(Math.random()*40)+1;
+				 gameEngineCallBack.nextNumber(num,this);
+			}
+		  catch(Exception e)
+			{
+			     System.out.println(e.getStackTrace());
+			}
+		   
+ 
+		}
 		
-		return number;
+		gameEngineCallBack.result(num, this);
+ 
+		return num;
 	}
 
 	@Override
@@ -79,13 +104,16 @@ public class GameEngineImpl implements GameEngine{
 		while(it.hasNext())
 		{
 			Player tmp = (Player) it.next();
+		    int pre_points = tmp.getPoints();
+			int bet = tmp.getBet();
  
 			if(tmp.getNumber()==result)
 			{
-			   int pre_points = tmp.getPoints();
-			   int bet = tmp.getBet();
 			   tmp.setPoints(pre_points+bet);
- 
+			}
+			else
+			{
+			   tmp.setPoints(pre_points-bet);
 			}
 		}		
 		
@@ -98,13 +126,16 @@ public class GameEngineImpl implements GameEngine{
 
 	@Override
 	public void addGameEngineCallback(GameEngineCallback gameEngineCallback) {
-		// TODO Auto-generated method stub
-		
+		this.gameEngineCallBack = gameEngineCallback;
 	}
 
 	@Override
 	public void removeGameEngineCallback(GameEngineCallback gameEngineCallback) {
-		// TODO Auto-generated method stub
+
+		if(gameEngineCallback instanceof GameEngineCallback)
+		{
+			this.gameEngineCallBack = null;
+		}
 		
 	} 
 }
